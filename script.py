@@ -4,19 +4,29 @@ from graphqlclient import GraphQLClient
 client = GraphQLClient('http://api.kivaws.org/graphql')
 
 result = client.execute('''
- {
-   loans(filters: {status: fundRaising}, sortBy: amountLeft) {
-     totalCount
-     values {
-       name
-       plannedExpirationDate
-       loanAmount
-     }
- }
+{
+  loans(filters: {status: fundRaising}, sortBy: expiringSoon) {
+    totalCount
+    values {
+      id
+      name
+      plannedExpirationDate
+      loanAmount
+      loanFundraisingInfo{
+        fundedAmount
+      }
+      updates{
+        values{
+          permalink
+        }
+      }
+    }
+  }
 }
+
 ''')
 
-print(result)
+#print(result)
 
 #aggregate results
 
@@ -28,5 +38,5 @@ total = 0
 for x in result:
 	total = total +  float(x["loanAmount"])	
 
-print("total is: " ,total)
+print("Total amount needed to fund all the loans: " ,total)
 
